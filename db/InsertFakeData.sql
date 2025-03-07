@@ -1,57 +1,87 @@
 USE PokemonDB;
 GO
 
--- Insert Types data (18 Pokemon types)
-INSERT INTO Types (Name) VALUES ('Normal');
-INSERT INTO Types (Name) VALUES ('Fire');
-INSERT INTO Types (Name) VALUES ('Water');
-INSERT INTO Types (Name) VALUES ('Grass');
-INSERT INTO Types (Name) VALUES ('Electric');
-INSERT INTO Types (Name) VALUES ('Ice');
-INSERT INTO Types (Name) VALUES ('Fighting');
-INSERT INTO Types (Name) VALUES ('Poison');
-INSERT INTO Types (Name) VALUES ('Ground');
-INSERT INTO Types (Name) VALUES ('Flying');
-INSERT INTO Types (Name) VALUES ('Psychic');
-INSERT INTO Types (Name) VALUES ('Bug');
-INSERT INTO Types (Name) VALUES ('Rock');
-INSERT INTO Types (Name) VALUES ('Ghost');
-INSERT INTO Types (Name) VALUES ('Dragon');
-INSERT INTO Types (Name) VALUES ('Dark');
-INSERT INTO Types (Name) VALUES ('Steel');
-INSERT INTO Types (Name) VALUES ('Fairy');
+-- Insert Type relationships
+INSERT INTO Types (Name, vs_Normal, vs_Fire, vs_Water, vs_Electric, vs_Grass, vs_Ice, vs_Fighting, vs_Poison, vs_Ground, vs_Flying, vs_Psychic, vs_Bug, vs_Rock, vs_Ghost, vs_Dragon, vs_Dark, vs_Steel, vs_Fairy)
+VALUES
+-- Normal: no type advantages, weak to Fighting, immune to Ghost
+('NORMAL', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0),
 
--- Insert Type relationships (sample)
-INSERT INTO TypeWeakTo (TypeName, WeakToType) VALUES ('Normal', 'Fighting');
-INSERT INTO TypeStrongAgainst (TypeName, StrongAgainstType) VALUES ('Fire', 'Grass');
-INSERT INTO TypeWeakAgainst (TypeName, WeakAgainstType) VALUES ('Water', 'Grass');
-INSERT INTO TypeImmuneTo (TypeName, ImmuneToType) VALUES ('Ghost', 'Normal');
-INSERT INTO TypeIneffectiveAgainst (TypeName, IneffectiveAgainstType) VALUES ('Normal', 'Rock');
+-- Fire: resists Fire/Grass/Ice/Bug/Steel/Fairy, weak to Water/Ground/Rock
+('FIRE', 1.0, 0.5, 2.0, 1.0, 0.5, 0.5, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 0.5),
+
+-- Water: resists Fire/Water/Ice/Steel, weak to Electric/Grass
+('WATER', 1.0, 0.5, 0.5, 2.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0),
+
+-- Electric: resists Electric/Flying/Steel, weak to Ground, immune to nothing
+('ELECTRIC', 1.0, 1.0, 1.0, 0.5, 0.5, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0),
+
+-- Grass: resists Water/Electric/Grass/Ground, weak to Fire/Ice/Poison/Flying/Bug
+('GRASS', 1.0, 2.0, 0.5, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+
+-- Ice: only resists Ice, weak to Fire/Fighting/Rock/Steel
+('ICE', 1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 1.0),
+
+-- Fighting: resists Bug/Rock/Dark, weak to Flying/Psychic/Fairy
+('FIGHTING', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 0.5, 0.5, 1.0, 1.0, 0.5, 1.0, 2.0),
+
+-- Poison: resists Grass/Fighting/Poison/Bug/Fairy, weak to Ground/Psychic
+('POISON', 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5),
+
+-- Ground: resists Poison/Rock, weak to Water/Grass/Ice, immune to Electric
+('GROUND', 1.0, 1.0, 2.0, 0.0, 2.0, 2.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0),
+
+-- Flying: resists Grass/Fighting/Bug, weak to Electric/Ice/Rock, immune to Ground
+('FLYING', 1.0, 1.0, 1.0, 2.0, 0.5, 2.0, 0.5, 1.0, 0.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+
+-- Psychic: resists Fighting/Psychic, weak to Bug/Ghost/Dark
+('PSYCHIC', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0),
+
+-- Bug: resists Grass/Fighting/Ground, weak to Fire/Flying/Rock
+('BUG', 1.0, 2.0, 1.0, 1.0, 0.5, 1.0, 0.5, 1.0, 0.5, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+
+-- Rock: resists Normal/Fire/Poison/Flying, weak to Water/Grass/Fighting/Ground/Steel
+('ROCK', 0.5, 0.5, 2.0, 1.0, 2.0, 1.0, 2.0, 0.5, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0),
+
+-- Ghost: resists Poison/Bug, weak to Ghost/Dark, immune to Normal/Fighting
+('GHOST', 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0),
+
+-- Dragon: resists Fire/Water/Electric/Grass, weak to Ice/Dragon/Fairy, immune to nothing
+('DRAGON', 1.0, 0.5, 0.5, 0.5, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0),
+
+-- Dark: resists Ghost/Dark, weak to Fighting/Bug/Fairy, immune to Psychic
+('DARK', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.0, 2.0, 1.0, 0.5, 1.0, 0.5, 1.0, 2.0),
+
+-- Steel: resists many types including Normal/Grass/Ice/Flying/Psychic/Bug/Rock/Dragon/Steel/Fairy, weak to Fire/Fighting/Ground, immune to Poison
+('STEEL', 0.5, 2.0, 1.0, 1.0, 0.5, 0.5, 2.0, 0.0, 2.0, 0.5, 0.5, 0.5, 0.5, 1.0, 0.5, 1.0, 0.5, 0.5),
+
+-- Fairy: resists Fighting/Bug/Dark, weak to Poison/Steel, immune to Dragon
+('FAIRY', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 0.0, 0.5, 2.0, 1.0);
 
 -- Insert ALL Abilities data FIRST to avoid foreign key constraints
-INSERT INTO Abilities (Name, Description) VALUES ('Overgrow', 'Powers up Grass-type moves when the Pokémon is in trouble');
-INSERT INTO Abilities (Name, Description) VALUES ('Blaze', 'Powers up Fire-type moves when the Pokémon is in trouble');
-INSERT INTO Abilities (Name, Description) VALUES ('Torrent', 'Powers up Water-type moves when the Pokémon is in trouble');
-INSERT INTO Abilities (Name, Description) VALUES ('Static', 'The Pokémon may paralyze attacking Pokémon on contact');
+INSERT INTO Abilities (Name, Description) VALUES ('Overgrow', 'Powers up Grass-type moves when the Pok?mon is in trouble');
+INSERT INTO Abilities (Name, Description) VALUES ('Blaze', 'Powers up Fire-type moves when the Pok?mon is in trouble');
+INSERT INTO Abilities (Name, Description) VALUES ('Torrent', 'Powers up Water-type moves when the Pok?mon is in trouble');
+INSERT INTO Abilities (Name, Description) VALUES ('Static', 'The Pok?mon may paralyze attacking Pok?mon on contact');
 INSERT INTO Abilities (Name, Description) VALUES ('Intimidate', 'Lowers opponent''s Attack stat');
 INSERT INTO Abilities (Name, Description) VALUES ('Levitate', 'Gives immunity to Ground-type moves');
-INSERT INTO Abilities (Name, Description) VALUES ('Chlorophyll', 'Boosts the Pokémon''s Speed in sunshine');
+INSERT INTO Abilities (Name, Description) VALUES ('Chlorophyll', 'Boosts the Pok?mon''s Speed in sunshine');
 INSERT INTO Abilities (Name, Description) VALUES ('Solar Power', 'Boosts Sp. Atk but loses HP in sunshine');
 INSERT INTO Abilities (Name, Description) VALUES ('Flash Fire', 'Powers up Fire-type moves if hit by one');
-INSERT INTO Abilities (Name, Description) VALUES ('Sturdy', 'The Pokémon cannot be knocked out with one hit');
-INSERT INTO Abilities (Name, Description) VALUES ('Rain Dish', 'The Pokémon gradually regains HP in rain');
-INSERT INTO Abilities (Name, Description) VALUES ('Lightning Rod', 'The Pokémon draws in all Electric-type moves');
+INSERT INTO Abilities (Name, Description) VALUES ('Sturdy', 'The Pok?mon cannot be knocked out with one hit');
+INSERT INTO Abilities (Name, Description) VALUES ('Rain Dish', 'The Pok?mon gradually regains HP in rain');
+INSERT INTO Abilities (Name, Description) VALUES ('Lightning Rod', 'The Pok?mon draws in all Electric-type moves');
 INSERT INTO Abilities (Name, Description) VALUES ('Air Lock', 'Eliminates the effects of weather');
-INSERT INTO Abilities (Name, Description) VALUES ('Flower Veil', 'Prevents lowering of ally Grass-type Pokémon stats');
-INSERT INTO Abilities (Name, Description) VALUES ('Symbiosis', 'The Pokémon passes its item to an ally when the ally uses up an item');
-INSERT INTO Abilities (Name, Description) VALUES ('Keen Eye', 'Prevents the Pokémon from losing accuracy');
-INSERT INTO Abilities (Name, Description) VALUES ('Inner Focus', 'Prevents the Pokémon from flinching');
+INSERT INTO Abilities (Name, Description) VALUES ('Flower Veil', 'Prevents lowering of ally Grass-type Pok?mon stats');
+INSERT INTO Abilities (Name, Description) VALUES ('Symbiosis', 'The Pok?mon passes its item to an ally when the ally uses up an item');
+INSERT INTO Abilities (Name, Description) VALUES ('Keen Eye', 'Prevents the Pok?mon from losing accuracy');
+INSERT INTO Abilities (Name, Description) VALUES ('Inner Focus', 'Prevents the Pok?mon from flinching');
 INSERT INTO Abilities (Name, Description) VALUES ('Swift Swim', 'Doubles Speed during rain');
-INSERT INTO Abilities (Name, Description) VALUES ('Wonder Guard', 'Only super-effective moves will hit. This unique ability protects the Pokémon from all moves except for those that are super-effective and indirect damage');
-INSERT INTO Abilities (Name, Description) VALUES ('Pressure', 'The Pokémon raises the PP cost of moves targeting it');
-INSERT INTO Abilities (Name, Description) VALUES ('Unnerve', 'Makes the opposing Pokémon nervous and unable to eat Berries');
-INSERT INTO Abilities (Name, Description) VALUES ('Run Away', 'Enables sure getaway from wild Pokémon');
-INSERT INTO Abilities (Name, Description) VALUES ('Adaptability', 'Powers up moves of the same type as the Pokémon');
+INSERT INTO Abilities (Name, Description) VALUES ('Wonder Guard', 'Only super-effective moves will hit. This unique ability protects the Pok?mon from all moves except for those that are super-effective and indirect damage');
+INSERT INTO Abilities (Name, Description) VALUES ('Pressure', 'The Pok?mon raises the PP cost of moves targeting it');
+INSERT INTO Abilities (Name, Description) VALUES ('Unnerve', 'Makes the opposing Pok?mon nervous and unable to eat Berries');
+INSERT INTO Abilities (Name, Description) VALUES ('Run Away', 'Enables sure getaway from wild Pok?mon');
+INSERT INTO Abilities (Name, Description) VALUES ('Adaptability', 'Powers up moves of the same type as the Pok?mon');
 INSERT INTO Abilities (Name, Description) VALUES ('Water Absorb', 'Restores HP if hit by a Water-type move');
 
 -- Insert Pokemon data (now that all Abilities exist)
@@ -91,7 +121,7 @@ VALUES ('Mega Rayquaza', 384, 'Dragon', 'Flying', 'Air Lock', NULL, NULL, ' 35''
 
 -- Pokemon with minimum values
 INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Flabébé', 669, 'Fairy', NULL, 'Flower Veil', 'Symbiosis', NULL, ' 0''04 ', 1, 44, 38, 39, 61, 79, 42, NULL);
+VALUES ('Flab?b?', 669, 'Fairy', NULL, 'Flower Veil', 'Symbiosis', NULL, ' 0''04 ', 1, 44, 38, 39, 61, 79, 42, NULL);
 
 -- Pokemon with special characters in name
 INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
@@ -164,7 +194,7 @@ INSERT INTO PokeDex (Pokemon_Name, Number) VALUES ('Eevee', 133);
 INSERT INTO PokeDex (Pokemon_Name, Number) VALUES ('Vaporeon', 134);
 INSERT INTO PokeDex (Pokemon_Name, Number) VALUES ('Farfetch''d', 83);
 INSERT INTO PokeDex (Pokemon_Name, Number) VALUES ('Mega Rayquaza', 384);
-INSERT INTO PokeDex (Pokemon_Name, Number) VALUES ('Flabébé', 669);
+INSERT INTO PokeDex (Pokemon_Name, Number) VALUES ('Flab?b?', 669);
 
 -- Insert LearnSet data
 INSERT INTO LearnSet (Dex_num, Move, Level_Learned) VALUES (1, 'Tackle', 1);

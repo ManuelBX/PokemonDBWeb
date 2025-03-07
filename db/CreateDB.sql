@@ -5,67 +5,29 @@ GO
 USE PokemonDB;
 GO
 
--- Create Types table
+--Create Types table
 CREATE TABLE Types (
     Name VARCHAR(10) PRIMARY KEY,
+    vs_Normal FLOAT CHECK (vs_Normal >= 0 AND vs_Normal <= 4) NOT NULL,
+    vs_Fire FLOAT CHECK (vs_Fire >= 0 AND vs_Fire <= 4) NOT NULL,
+    vs_Water FLOAT CHECK (vs_Water >= 0 AND vs_Water <= 4) NOT NULL,
+    vs_Electric FLOAT CHECK (vs_Electric >= 0 AND vs_Electric <= 4) NOT NULL,
+    vs_Grass FLOAT CHECK (vs_Grass >= 0 AND vs_Grass <= 4) NOT NULL,
+    vs_Ice FLOAT CHECK (vs_Ice >= 0 AND vs_Ice <= 4) NOT NULL,
+    vs_Fighting FLOAT CHECK (vs_Fighting >= 0 AND vs_Fighting <= 4) NOT NULL,
+    vs_Poison FLOAT CHECK (vs_Poison >= 0 AND vs_Poison <= 4) NOT NULL,
+    vs_Ground FLOAT CHECK (vs_Ground >= 0 AND vs_Ground <= 4) NOT NULL,
+    vs_Flying FLOAT CHECK (vs_Flying >= 0 AND vs_Flying <= 4) NOT NULL,
+    vs_Psychic FLOAT CHECK (vs_Psychic >= 0 AND vs_Psychic <= 4) NOT NULL,
+    vs_Bug FLOAT CHECK (vs_Bug >= 0 AND vs_Bug <= 4) NOT NULL,
+    vs_Rock FLOAT CHECK (vs_Rock >= 0 AND vs_Rock <= 4) NOT NULL,
+    vs_Ghost FLOAT CHECK (vs_Ghost >= 0 AND vs_Ghost <= 4) NOT NULL,
+    vs_Dragon FLOAT CHECK (vs_Dragon >= 0 AND vs_Dragon <= 4) NOT NULL,
+    vs_Dark FLOAT CHECK (vs_Dark >= 0 AND vs_Dark <= 4) NOT NULL,
+    vs_Steel FLOAT CHECK (vs_Steel >= 0 AND vs_Steel <= 4) NOT NULL,
+    vs_Fairy FLOAT CHECK (vs_Fairy >= 0 AND vs_Fairy <= 4) NOT NULL,
     CONSTRAINT check_type_name_length CHECK (LEN(Name) BETWEEN 1 AND 10)
 );
-GO
-
--- Create junction tables for type relationships
-CREATE TABLE TypeWeakTo (
-    TypeName VARCHAR(10),
-    WeakToType VARCHAR(10),
-    PRIMARY KEY (TypeName, WeakToType),
-    FOREIGN KEY (TypeName) REFERENCES Types(Name),
-    FOREIGN KEY (WeakToType) REFERENCES Types(Name)
-);
-GO
-
-CREATE TABLE TypeWeakAgainst (
-    TypeName VARCHAR(10),
-    WeakAgainstType VARCHAR(10),
-    PRIMARY KEY (TypeName, WeakAgainstType),
-    FOREIGN KEY (TypeName) REFERENCES Types(Name),
-    FOREIGN KEY (WeakAgainstType) REFERENCES Types(Name)
-);
-GO
-
-CREATE TABLE TypeStrongTo (
-    TypeName VARCHAR(10),
-    StrongToType VARCHAR(10),
-    PRIMARY KEY (TypeName, StrongToType),
-    FOREIGN KEY (TypeName) REFERENCES Types(Name),
-    FOREIGN KEY (StrongToType) REFERENCES Types(Name)
-);
-GO
-
-CREATE TABLE TypeStrongAgainst (
-    TypeName VARCHAR(10),
-    StrongAgainstType VARCHAR(10),
-    PRIMARY KEY (TypeName, StrongAgainstType),
-    FOREIGN KEY (TypeName) REFERENCES Types(Name),
-    FOREIGN KEY (StrongAgainstType) REFERENCES Types(Name)
-);
-GO
-
-CREATE TABLE TypeImmuneTo (
-    TypeName VARCHAR(10),
-    ImmuneToType VARCHAR(10),
-    PRIMARY KEY (TypeName, ImmuneToType),
-    FOREIGN KEY (TypeName) REFERENCES Types(Name),
-    FOREIGN KEY (ImmuneToType) REFERENCES Types(Name)
-);
-GO
-
-CREATE TABLE TypeIneffectiveAgainst (
-    TypeName VARCHAR(10),
-    IneffectiveAgainstType VARCHAR(10),
-    PRIMARY KEY (TypeName, IneffectiveAgainstType),
-    FOREIGN KEY (TypeName) REFERENCES Types(Name),
-    FOREIGN KEY (IneffectiveAgainstType) REFERENCES Types(Name)
-);
-GO
 
 -- Create Abilities table
 CREATE TABLE Abilities (
