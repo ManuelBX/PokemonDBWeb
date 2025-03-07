@@ -123,8 +123,8 @@ INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, 
 VALUES ('Mega Rayquaza', 384, 'Dragon', 'Flying', 'Air Lock', NULL, NULL, ' 35''05 ', 999, 105, 180, 100, 180, 100, 115, 'Mega');
 
 -- Pokemon with minimum values
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
-VALUES ('Flab?b?', 669, 'Fairy', NULL, 'Flower Veil', 'Symbiosis', NULL, ' 0''04 ', 1, 44, 38, 39, 61, 79, 42);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
+VALUES ('Flab?b?', 669, 'Fairy', NULL, 'Flower Veil', 'Symbiosis', NULL, ' 0''04 ', 1, 44, 38, 39, 61, 79, 42, NULL);
 
 -- Pokemon with special characters in name
 INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
