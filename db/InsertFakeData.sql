@@ -85,58 +85,61 @@ INSERT INTO Abilities (Name, Description) VALUES ('Adaptability', 'Powers up mov
 INSERT INTO Abilities (Name, Description) VALUES ('Water Absorb', 'Restores HP if hit by a Water-type move');
 
 -- Insert Pokemon data (now that all Abilities exist)
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Bulbasaur', 1, 'Grass', 'Poison', 'Overgrow', 'Chlorophyll', NULL, ' 2''04 ', 15, 45, 49, 49, 65, 65, 45, NULL);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Bulbasaur', 1, 'Grass', 'Poison', 'Overgrow', 'Chlorophyll', NULL, ' 2''04 ', 15, 45, 49, 49, 65, 65, 45);
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Ivysaur', 2, 'Grass', 'Poison', 'Overgrow', 'Chlorophyll', NULL, ' 3''03 ', 29, 60, 62, 63, 80, 80, 60, NULL);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Ivysaur', 2, 'Grass', 'Poison', 'Overgrow', 'Chlorophyll', NULL, ' 3''03 ', 29, 60, 62, 63, 80, 80, 60);
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Venusaur', 3, 'Grass', 'Poison', 'Overgrow', 'Chlorophyll', NULL, ' 6''07 ', 220, 80, 82, 83, 100, 100, 80, 'Gigantamax');
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Venusaur', 3, 'Grass', 'Poison', 'Overgrow', 'Chlorophyll', NULL, ' 6''07 ', 220, 80, 82, 83, 100, 100, 80);
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Charmander', 4, 'Fire', NULL, 'Blaze', 'Solar Power', NULL, ' 2''00 ', 19, 39, 52, 43, 60, 50, 65, NULL);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
+VALUES ('Venusaur', 3, 'Grass', 'Poison', 'Overgrow', 'Chlorophyll', NULL, ' 6''07 ', 220, 80, 100, 123, 122, 120, 80, 'Mega');
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Charmeleon', 5, 'Fire', NULL, 'Blaze', 'Solar Power', NULL, ' 3''07 ', 42, 58, 64, 58, 80, 65, 80, NULL);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Charmander', 4, 'Fire', NULL, 'Blaze', 'Solar Power', NULL, ' 2''00 ', 19, 39, 52, 43, 60, 50, 65);
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Charmeleon', 5, 'Fire', NULL, 'Blaze', 'Solar Power', NULL, ' 3''07 ', 42, 58, 64, 58, 80, 65, 80);
+
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Charizard', 6, 'Fire', 'Flying', 'Blaze', 'Solar Power', NULL, ' 5''07 ', 200, 78, 84, 78, 109, 85, 100, 'Gigantamax');
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Squirtle', 7, 'Water', NULL, 'Torrent', 'Rain Dish', NULL, ' 1''08 ', 20, 44, 48, 65, 50, 64, 43, NULL);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Squirtle', 7, 'Water', NULL, 'Torrent', 'Rain Dish', NULL, ' 1''08 ', 20, 44, 48, 65, 50, 64, 43);
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Wartortle', 8, 'Water', NULL, 'Torrent', 'Rain Dish', NULL, ' 3''03 ', 50, 59, 63, 80, 65, 80, 58, NULL);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Wartortle', 8, 'Water', NULL, 'Torrent', 'Rain Dish', NULL, ' 3''03 ', 50, 59, 63, 80, 65, 80, 58);
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Blastoise', 9, 'Water', NULL, 'Torrent', 'Rain Dish', NULL, ' 5''03 ', 188, 79, 83, 100, 85, 105, 78, 'Gigantamax');
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Pikachu', 25, 'Electric', NULL, 'Static', 'Lightning Rod', NULL, ' 1''04 ', 13, 35, 55, 40, 50, 50, 90, 'Gigantamax');
 
 -- Testing Pokemon with maximum values
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Mega Rayquaza', 384, 'Dragon', 'Flying', 'Air Lock', NULL, NULL, ' 35''05 ', 999, 105, 180, 100, 180, 100, 115, 'Mega');
 
 -- Pokemon with minimum values
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Flab?b?', 669, 'Fairy', NULL, 'Flower Veil', 'Symbiosis', NULL, ' 0''04 ', 1, 44, 38, 39, 61, 79, 42, NULL);
 
 -- Pokemon with special characters in name
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Farfetch''d', 83, 'Normal', 'Flying', 'Keen Eye', 'Inner Focus', NULL, ' 2''07 ', 33, 52, 90, 55, 58, 62, 60, 'Galarian');
 
 -- Testing foreign key constraints with additional Pokemon
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Mewtwo', 150, 'Psychic', NULL, 'Pressure', 'Unnerve', NULL, ' 6''07 ', 269, 106, 110, 90, 154, 90, 130, 'Mega X');
 
 -- Testing additional evolution chain
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Form)
 VALUES ('Eevee', 133, 'Normal', NULL, 'Run Away', 'Adaptability', NULL, ' 1''00 ', 14, 55, 55, 50, 45, 65, 55, 'Gigantamax');
 
-INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed, Regional_Forms)
-VALUES ('Vaporeon', 134, 'Water', NULL, 'Water Absorb', NULL, NULL, ' 3''03 ', 64, 130, 65, 60, 110, 95, 65, NULL);
+INSERT INTO Pokemon (Name, Dex_Num, Type1, Type2, Ability1, Ability2, Ability3, Height, Weight, HP, Atk, Def, Sp_Atk, Sp_Def, Speed)
+VALUES ('Vaporeon', 134, 'Water', NULL, 'Water Absorb', NULL, NULL, ' 3''03 ', 64, 130, 65, 60, 110, 95, 65);
 
 -- Insert Moves data
 INSERT INTO Moves (Name, Power, Accuracy, Category, PP, Contact, Type)

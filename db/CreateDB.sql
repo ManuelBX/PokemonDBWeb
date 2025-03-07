@@ -40,6 +40,7 @@ GO
 -- Create Pokemon table - Added single-column index for Dex_Num and Name
 CREATE TABLE Pokemon (
     Name VARCHAR(256),
+	Regional_Form VARCHAR(256) DEFAULT('Base'),
     Dex_Num INT,
     Type1 VARCHAR(10) NOT NULL,
     Type2 VARCHAR(10), -- Can be NULL
@@ -54,8 +55,7 @@ CREATE TABLE Pokemon (
     Sp_Atk INT NOT NULL CHECK (Sp_Atk > 0),
     Sp_Def INT NOT NULL CHECK (Sp_Def > 0),
     Speed INT NOT NULL CHECK (Speed > 0),
-    Regional_Forms VARCHAR(256),
-    PRIMARY KEY (Name, Dex_Num, Height),
+    PRIMARY KEY (Name, Dex_Num, Regional_Form),
     FOREIGN KEY (Type1) REFERENCES Types(Name),
     FOREIGN KEY (Type2) REFERENCES Types(Name),
     FOREIGN KEY (Ability1) REFERENCES Abilities(Name),
