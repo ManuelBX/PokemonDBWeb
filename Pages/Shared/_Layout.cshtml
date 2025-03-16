@@ -3,16 +3,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PokemonDBWeb2</title>
+    <title>@ViewData["Title"] - PokeDex</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/PokemonDBWeb2.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PokeDex.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">PokemonDBWeb2</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">PokeDex</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,8 +22,35 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="searchDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Pokemon Search
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="searchDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Search/Basic">Basic Search</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Search/Advanced">Advanced Search</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Pokemon/Detail">Pokemon Details</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="battleDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Battle Support
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="battleDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Battle/MoveSearch">Move Search</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Battle/TypeEffectiveness">Type Effectiveness</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Battle/StatComparison">Stat Comparison</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="evolutionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Evolution
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="evolutionDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Evolution/Chain">Evolution Chains</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Evolution/Conditions">Evolution Conditions</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Evolution/Items">Evolution Items</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -38,7 +65,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - PokemonDBWeb2 - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2025 - PokeDex - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 

@@ -5,7 +5,7 @@ GO
 USE PokemonDB;
 GO
 
---Create Types table
+-- Create Types table
 CREATE TABLE Types (
     Name VARCHAR(10) PRIMARY KEY,
     vs_Normal FLOAT CHECK (vs_Normal >= 0 AND vs_Normal <= 4) NOT NULL,
@@ -37,11 +37,21 @@ CREATE TABLE Abilities (
 );
 GO
 
--- Create Pokemon table - Added single-column index for Dex_Num and Name
+-- Create PokeDex table
+CREATE TABLE PokeDex (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    Dex_Num INT NOT NULL,
+    Name VARCHAR(256) NOT NULL,
+    Regional_Form VARCHAR(256) DEFAULT('Base'),
+    CONSTRAINT check_pokedex_name_length CHECK (LEN(Name) BETWEEN 1 AND 256),
+    -- Ensure combination of Dex_Num, Name, and Regional_Form is unique
+    CONSTRAINT UK_Pokedex_DexNum_Name_Form UNIQUE (Dex_Num, Name, Regional_Form)
+);
+GO
+
+-- Create Pokemon table using PokeDex.Id as reference
 CREATE TABLE Pokemon (
-    Name VARCHAR(256),
-	Regional_Form VARCHAR(256) DEFAULT('Base'),
-    Dex_Num INT,
+    Pokemon_Id UNIQUEIDENTIFIER PRIMARY KEY,
     Type1 VARCHAR(10) NOT NULL,
     Type2 VARCHAR(10), -- Can be NULL
     Ability1 VARCHAR(256) NOT NULL,
@@ -49,41 +59,19 @@ CREATE TABLE Pokemon (
     Ability3 VARCHAR(256), -- Can be NULL
     Height VARCHAR(256) NOT NULL,
     Weight INT NOT NULL CHECK (Weight > 0),
-    HP INT NOT NULL CHECK (HP > 0),
-    Atk INT NOT NULL CHECK (Atk > 0),
-    Def INT NOT NULL CHECK (Def > 0),
-    Sp_Atk INT NOT NULL CHECK (Sp_Atk > 0),
-    Sp_Def INT NOT NULL CHECK (Sp_Def > 0),
-    Speed INT NOT NULL CHECK (Speed > 0),
-    PRIMARY KEY (Name, Dex_Num, Regional_Form),
+    
+    FOREIGN KEY (Pokemon_Id) REFERENCES PokeDex(Id),
     FOREIGN KEY (Type1) REFERENCES Types(Name),
     FOREIGN KEY (Type2) REFERENCES Types(Name),
     FOREIGN KEY (Ability1) REFERENCES Abilities(Name),
     FOREIGN KEY (Ability2) REFERENCES Abilities(Name),
     FOREIGN KEY (Ability3) REFERENCES Abilities(Name),
-    CONSTRAINT check_pokemon_name_length CHECK (LEN(Name) BETWEEN 1 AND 256),
-    CONSTRAINT check_height_format CHECK (Height LIKE ' [0-9]%''[0-9][0-9] ' AND 
+    CONSTRAINT check_height_format CHECK (Height LIKE '[0-9]%''[0-9][0-9]"' AND 
                                           SUBSTRING(Height, PATINDEX('%''%', Height) + 1, 2) BETWEEN '00' AND '11')
 );
 GO
 
--- Create single-column indexes for the Pokemon table to support foreign key relationships
-CREATE UNIQUE INDEX IX_Pokemon_Name ON Pokemon(Name);
-CREATE UNIQUE INDEX IX_Pokemon_Dex_Num ON Pokemon(Dex_Num);
-GO
-
--- Create PokeDex table
-CREATE TABLE PokeDex (
-    Pokemon_Name VARCHAR(256),
-    Number INT PRIMARY KEY,
-    FOREIGN KEY (Pokemon_Name) REFERENCES Pokemon(Name)
-);
-GO
-
--- Create Moves table (with DROP IF EXISTS to fix duplicate error)
-IF OBJECT_ID('dbo.Moves', 'U') IS NOT NULL
-    DROP TABLE dbo.Moves;
-GO
+-- Create Moves table
 
 CREATE TABLE Moves (
     Name VARCHAR(256) PRIMARY KEY,
@@ -99,23 +87,44 @@ CREATE TABLE Moves (
 );
 GO
 
--- Create LearnSet table
+-- Create LearnSet table with Pokemon_Id
 CREATE TABLE LearnSet (
-    Dex_num INT,
+    Pokemon_Id UNIQUEIDENTIFIER,
     Move VARCHAR(256),
-    Level_Learned INT CHECK (Level_Learned > 0),
-    PRIMARY KEY (Dex_num, Move),
-    FOREIGN KEY (Dex_num) REFERENCES Pokemon(Dex_Num),
+    Level_Learned INT CHECK (Level_Learned >= 0),
+    PRIMARY KEY (Pokemon_Id, Move, Level_Learned),
+    FOREIGN KEY (Pokemon_Id) REFERENCES Pokemon(Pokemon_Id),
     FOREIGN KEY (Move) REFERENCES Moves(Name)
 );
 GO
 
--- Create Evolutions table
+-- Create Evolutions table with Pokemon_Id
 CREATE TABLE Evolutions (
-    Base VARCHAR(256),
-    Evolutions VARCHAR(256),
-    PRIMARY KEY (Base, Evolutions),
-    FOREIGN KEY (Base) REFERENCES Pokemon(Name),
-    FOREIGN KEY (Evolutions) REFERENCES Pokemon(Name)
+    Base_Pokemon_Id UNIQUEIDENTIFIER,
+    Evolved_Pokemon_Id UNIQUEIDENTIFIER,
+    Evolution_Method VARCHAR(256) NOT NULL,
+    PRIMARY KEY (Base_Pokemon_Id, Evolved_Pokemon_Id),
+    FOREIGN KEY (Base_Pokemon_Id) REFERENCES Pokemon(Pokemon_Id),
+    FOREIGN KEY (Evolved_Pokemon_Id) REFERENCES Pokemon(Pokemon_Id),
+    CONSTRAINT check_different_pokemon CHECK (Base_Pokemon_Id <> Evolved_Pokemon_Id)
 );
+GO
+
+-- Create Pokemon_Stats table
+CREATE TABLE Pokemon_Stats (
+    Pokemon_Id UNIQUEIDENTIFIER PRIMARY KEY,
+    HP INT NOT NULL CHECK (HP > 0),
+    Atk INT NOT NULL CHECK (Atk > 0),
+    Def INT NOT NULL CHECK (Def > 0),
+    Sp_Atk INT NOT NULL CHECK (Sp_Atk > 0),
+    Sp_Def INT NOT NULL CHECK (Sp_Def > 0),
+    Speed INT NOT NULL CHECK (Speed > 0),
+    FOREIGN KEY (Pokemon_Id) REFERENCES Pokemon(Pokemon_Id)
+);
+GO
+
+-- Create useful indexes
+CREATE INDEX idx_pokedex_dexnum ON PokeDex(Dex_Num);
+CREATE INDEX idx_pokedex_name ON PokeDex(Name);
+CREATE INDEX idx_pokedex_form ON PokeDex(Regional_Form);
 GO

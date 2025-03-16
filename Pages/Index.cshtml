@@ -1,10 +1,85 @@
 ﻿@page
-@model IndexModel
+@model PokeDex.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to the PokeDex</h1>
+    <p class="lead">Your comprehensive resource for Pokémon information, battle support, and evolution research.</p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">Pokémon Search</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Search for Pokémon by name, number, or type. Filter by generation, type, or ability.</p>
+                <a asp-page="/Search/Basic" class="btn btn-primary">Basic Search</a>
+                <a asp-page="/Search/Advanced" class="btn btn-outline-primary">Advanced Search</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">Battle Support</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Find Pokémon with specific moves, calculate type effectiveness, and compare base stats.</p>
+                <a asp-page="/Battle/MoveSearch" class="btn btn-primary">Move Search</a>
+                <a asp-page="/Battle/TypeEffectiveness" class="btn btn-outline-primary">Type Chart</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">Evolution Research</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">View evolution chains, find Pokémon with specific evolution conditions, and more.</p>
+                <a asp-page="/Evolution/Chain" class="btn btn-primary">Evolution Chains</a>
+                <a asp-page="/Evolution/Items" class="btn btn-outline-primary">Evolution Items</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Featured Pokémon</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var pokemon in Model.FeaturedPokemon)
+                    {
+                        <div class="col-md-2 col-sm-4 mb-3">
+                            <div class="card h-100">
+                                <img src="@pokemon.ImageUrl" class="card-img-top" alt="@pokemon.Name">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">#@pokemon.PokedexNumber</h6>
+                                    <p class="card-text">@pokemon.Name</p>
+                                    <div class="d-flex justify-content-center">
+                                        <span class="badge bg-@Model.GetTypeColor(pokemon.PrimaryType) me-1">@pokemon.PrimaryType</span>
+                                        @if (!string.IsNullOrEmpty(pokemon.SecondaryType))
+                                        {
+                                            <span class="badge bg-@Model.GetTypeColor(pokemon.SecondaryType)">@pokemon.SecondaryType</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <a asp-page="/Pokemon/Detail" asp-route-id="@pokemon.Id" class="btn btn-sm btn-outline-primary d-block">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    </div>
+            </div>
+        </div>
+    </div>
 </div>

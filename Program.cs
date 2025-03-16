@@ -1,7 +1,20 @@
+using PokeDex.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// Register database connection
+builder.Services.AddSingleton<IDatabaseConnectionFactory>(provider =>
+    new SqlConnectionFactory(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register services
+builder.Services.AddScoped<IPokemonService, PokemonService>();
+builder.Services.AddScoped<IMoveService, MoveService>();
+builder.Services.AddScoped<ITypeService, TypeService>();
+builder.Services.AddScoped<IEvolutionService, EvolutionService>();
+builder.Services.AddScoped<IAbilityService, AbilityService>();
 
 var app = builder.Build();
 
