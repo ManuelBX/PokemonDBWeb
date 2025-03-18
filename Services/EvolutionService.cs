@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using PokeDex.Models;
 
@@ -8,10 +9,10 @@ namespace PokeDex.Services
 {
     public interface IEvolutionService
     {
-        Task<EvolutionInfo> GetEvolutionChainByPokemonIdAsync(int pokemonId);
-        Task<List<Pokemon>> GetPokemonByEvolutionConditionAsync(string condition);
-        Task<List<EvolutionItem>> GetAllEvolutionItemsAsync();
-        Task<List<Pokemon>> GetPokemonByEvolutionItemAsync(string itemName);
+        // Minimal: get direct evolutions for a given Dex number:
+        Task<List<(int EvolvedDexNum, string EvolvedName, string Method)>> GetEvolutionsAsync(int baseDexNum);
+        // Or reverse: find what evolves into baseDexNum
+        Task<List<(int BaseDexNum, string BaseName, string Method)>> GetPreEvolutionsAsync(int evolvedDexNum);
     }
 
     public class EvolutionService : IEvolutionService
@@ -23,143 +24,79 @@ namespace PokeDex.Services
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<EvolutionInfo> GetEvolutionChainByPokemonIdAsync(int pokemonId)
+        public async Task<List<(int EvolvedDexNum, string EvolvedName, string Method)>> GetEvolutionsAsync(int baseDexNum)
         {
+            // 1) Look up the GUID for that base DexNum
             using var connection = _connectionFactory.CreateConnection();
+            var baseSql = @"
+                SELECT Id
+                FROM PokeDex
+                WHERE Dex_Num = @DexNum;
+            ";
+            var baseGuid = await connection.QueryFirstOrDefaultAsync<Guid?>(baseSql, new { DexNum = baseDexNum });
+            if (!baseGuid.HasValue) return new List<(int, string, string)>();
 
-            // First get the evolution chain ID for this pokemon
-            var chainIdQuery = @"
-                SELECT ec.Id
-                FROM EvolutionChains ec
-                JOIN PokemonEvolutionChains pec ON ec.Id = pec.EvolutionChainId
-                WHERE pec.PokemonId = @PokemonId";
+            // 2) Join Evolutions to find who evolves from baseGuid
+            var evoSql = @"
+                SELECT 
+                    evo.Evolved_Pokemon_Id,
+                    evo.Evolution_Method
+                FROM Evolutions evo
+                WHERE evo.Base_Pokemon_Id = @BaseId;
+            ";
+            var evoRows = await connection.QueryAsync(evoSql, new { BaseId = baseGuid.Value });
 
-            var chainId = await connection.QueryFirstOrDefaultAsync<int?>(chainIdQuery, new { PokemonId = pokemonId });
-
-            if (!chainId.HasValue)
-                return null;
-
-            // Then get all pokemon in the evolution chain
-            var pokemonQuery = @"
-                SELECT p.Id, p.Name, p.ImageUrl
-                FROM Pokemon p
-                JOIN PokemonEvolutionChains pec ON p.Id = pec.PokemonId
-                WHERE pec.EvolutionChainId = @ChainId
-                ORDER BY p.PokedexNumber";
-
-            var pokemonInChain = await connection.QueryAsync<dynamic>(pokemonQuery, new { ChainId = chainId.Value });
-
-            // Get evolution methods
-            var evolutionsQuery = @"
-                SELECT FromPokemonId, ToPokemonId, Method, Condition, MinLevel, Item, TimeOfDay, Location
-                FROM EvolutionMethods
-                WHERE FromPokemonId IN @PokemonIds";
-
-            var pokemonIds = pokemonInChain.Select(p => (int)p.Id).ToArray();
-            var evolutions = await connection.QueryAsync<dynamic>(evolutionsQuery, new { PokemonIds = pokemonIds });
-
-            // Build evolution tree
-            var result = new EvolutionInfo
+            // 3) For each Evolved_Pokemon_Id, get DexNum + Name
+            var result = new List<(int, string, string)>();
+            foreach (var row in evoRows)
             {
-                ChainId = chainId.Value,
-                Chain = new List<EvolutionStage>()
-            };
-
-            foreach (var pokemon in pokemonInChain)
-            {
-                var stage = new EvolutionStage
+                var dexSql = @"
+                    SELECT pd.Dex_Num, pd.Name
+                    FROM PokeDex pd
+                    WHERE pd.Id = @EvolvedGuid;
+                ";
+                var dexData = await connection.QueryFirstOrDefaultAsync(dexSql, new { EvolvedGuid = (Guid)row.Evolved_Pokemon_Id });
+                if (dexData != null)
                 {
-                    PokemonId = pokemon.Id,
-                    PokemonName = pokemon.Name,
-                    ImageUrl = pokemon.ImageUrl,
-                    EvolvesTo = new List<EvolutionMethod>()
-                };
-
-                foreach (var evolution in evolutions.Where(e => e.FromPokemonId == (int)pokemon.Id))
-                {
-                    var toPokemon = pokemonInChain.FirstOrDefault(p => p.Id == (int)evolution.ToPokemonId);
-
-                    if (toPokemon != null)
-                    {
-                        stage.EvolvesTo.Add(new EvolutionMethod
-                        {
-                            ToPokemonId = evolution.ToPokemonId,
-                            ToPokemonName = toPokemon.Name,
-                            ImageUrl = toPokemon.ImageUrl,
-                            Method = evolution.Method,
-                            Condition = evolution.Condition,
-                            MinLevel = evolution.MinLevel,
-                            Item = evolution.Item,
-                            TimeOfDay = evolution.TimeOfDay,
-                            Location = evolution.Location
-                        });
-                    }
+                    result.Add(((int)dexData.Dex_Num, (string)dexData.Name, (string)row.Evolution_Method));
                 }
-
-                result.Chain.Add(stage);
             }
-
             return result;
         }
 
-        public async Task<List<Pokemon>> GetPokemonByEvolutionConditionAsync(string condition)
+        public async Task<List<(int BaseDexNum, string BaseName, string Method)>> GetPreEvolutionsAsync(int evolvedDexNum)
         {
             using var connection = _connectionFactory.CreateConnection();
+            // 1) Find the GUID for the 'evolved' DexNum
+            var evolvedSql = "SELECT Id FROM PokeDex WHERE Dex_Num = @DexNum;";
+            var evolvedGuid = await connection.QueryFirstOrDefaultAsync<Guid?>(evolvedSql, new { DexNum = evolvedDexNum });
+            if (!evolvedGuid.HasValue) return new List<(int, string, string)>();
 
-            var query = @"
-                SELECT p.Id, p.Name, p.PokedexNumber, p.Generation, p.PrimaryType, p.SecondaryType, p.ImageUrl
-                FROM Pokemon p
-                JOIN EvolutionMethods em ON p.Id = em.FromPokemonId
-                WHERE em.Condition LIKE @Condition
-                ORDER BY p.PokedexNumber";
+            // 2) Find all base forms from Evolutions
+            var baseSql = @"
+                SELECT
+                    evo.Base_Pokemon_Id,
+                    evo.Evolution_Method
+                FROM Evolutions evo
+                WHERE evo.Evolved_Pokemon_Id = @EvolvedId;
+            ";
+            var baseRows = await connection.QueryAsync(baseSql, new { EvolvedId = evolvedGuid.Value });
 
-            var pokemon = await connection.QueryAsync<Pokemon>(query, new { Condition = $"%{condition}%" });
-
-            return pokemon.AsList();
-        }
-
-        public async Task<List<EvolutionItem>> GetAllEvolutionItemsAsync()
-        {
-            using var connection = _connectionFactory.CreateConnection();
-
-            var query = @"
-                SELECT Id, Name, Description, ImageUrl
-                FROM Items
-                WHERE IsEvolutionItem = 1
-                ORDER BY Name";
-
-            var items = await connection.QueryAsync<EvolutionItem>(query);
-
-            foreach (var item in items)
+            var result = new List<(int, string, string)>();
+            foreach (var row in baseRows)
             {
-                var usesQuery = @"
-                    SELECT DISTINCT p.Name
-                    FROM Pokemon p
-                    JOIN EvolutionMethods em ON p.Id = em.FromPokemonId
-                    WHERE em.Item = @ItemName
-                    ORDER BY p.Name";
-
-                var uses = await connection.QueryAsync<string>(usesQuery, new { ItemName = item.Name });
-                item.PokemonUses = uses.AsList();
+                var dexSql = @"
+                    SELECT pd.Dex_Num, pd.Name
+                    FROM PokeDex pd
+                    WHERE pd.Id = @BaseGuid;
+                ";
+                var baseData = await connection.QueryFirstOrDefaultAsync(dexSql, new { BaseGuid = (Guid)row.Base_Pokemon_Id });
+                if (baseData != null)
+                {
+                    result.Add(((int)baseData.Dex_Num, (string)baseData.Name, (string)row.Evolution_Method));
+                }
             }
-
-            return items.AsList();
-        }
-
-        public async Task<List<Pokemon>> GetPokemonByEvolutionItemAsync(string itemName)
-        {
-            using var connection = _connectionFactory.CreateConnection();
-
-            var query = @"
-                SELECT p.Id, p.Name, p.PokedexNumber, p.Generation, p.PrimaryType, p.SecondaryType, p.ImageUrl
-                FROM Pokemon p
-                JOIN EvolutionMethods em ON p.Id = em.FromPokemonId
-                WHERE em.Item = @ItemName
-                ORDER BY p.PokedexNumber";
-
-            var pokemon = await connection.QueryAsync<Pokemon>(query, new { ItemName = itemName });
-
-            return pokemon.AsList();
+            return result;
         }
     }
 }

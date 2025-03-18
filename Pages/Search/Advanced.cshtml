@@ -1,0 +1,180 @@
+﻿@page
+@model PokeDex.Pages.Search.AdvancedModel
+@{
+    ViewData["Title"] = "Advanced Pokemon Search";
+}
+
+<div class="container">
+    <h1>Advanced Pokemon Search</h1>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Name or Number</label>
+                                <input asp-for="@Model.Filters.NameOrNumber" class="form-control" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Types</label>
+                                <select multiple asp-for="@Model.Filters.Types" asp-items="Model.TypeOptions" class="form-select" style="height: 150px;">
+                                </select>
+                                <small class="text-muted">Use Ctrl/⌘ to select multiple types</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Abilities</label>
+                                <select multiple asp-for="@Model.Filters.Abilities" asp-items="Model.AbilityOptions" class="form-select" style="height: 150px;">
+                                </select>
+                                <small class="text-muted">Use Ctrl/⌘ to select multiple abilities</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Moves</label>
+                                <select multiple asp-for="@Model.Filters.Moves" asp-items="Model.MoveOptions" class="form-select" style="height: 150px;">
+                                </select>
+                                <small class="text-muted">Use Ctrl/⌘ to select multiple moves</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Stat Type</label>
+                                <select asp-for="@Model.Filters.StatType" asp-items="Model.StatTypeOptions" class="form-select">
+                                </select>
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Min Stat</label>
+                                <input asp-for="@Model.Filters.MinStat" class="form-control" />
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Max Stat</label>
+                                <input asp-for="@Model.Filters.MaxStat" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Sort By</label>
+                                <select asp-for="@Model.Filters.SortBy" class="form-select">
+                                    <option value="pokedex">Pokedex Number</option>
+                                    <option value="name">Name</option>
+                                    <option value="type">Type</option>
+                                    <option value="hp">HP</option>
+                                    <option value="attack">Attack</option>
+                                    <option value="defense">Defense</option>
+                                    <option value="special-attack">Special Attack</option>
+                                    <option value="special-defense">Special Defense</option>
+                                    <option value="speed">Speed</option>
+                                    <option value="total">Total Stats</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Sort Direction</label>
+                                <select asp-for="@Model.Filters.SortDescending" class="form-select">
+                                    <option value="false">Ascending</option>
+                                    <option value="true">Descending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 mb-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">Search</button>
+                            </div>
+                            <div class="col-md-2 mb-3 d-flex align-items-end">
+                                <a asp-page="/Search/Basic" class="btn btn-outline-secondary w-100">Basic Search</a>
+                            </div>
+                            <div class="col-md-2 mb-3 d-flex align-items-end">
+                                <a asp-page="/Search/Advanced" class="btn btn-outline-danger w-100">Reset</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Results != null && Model.Results.Any())
+    {
+        <div class="row">
+            <div class="col">
+                <p>
+                    Found @Model.TotalResults results. Showing
+                    @(((Model.CurrentPage - 1) * Model.Filters.PageSize) + 1)
+                    to @(Math.Min(Model.TotalResults, Model.CurrentPage * Model.Filters.PageSize)).
+                </p>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var pokemon in Model.Results)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between">
+                            <span class="fw-bold">#@pokemon.PokedexNumber</span>
+                        </div>
+                        <img src="@pokemon.ImageUrl" class="card-img-top p-3" alt="@pokemon.Name" style="height: 200px; object-fit: contain;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@pokemon.Name</h5>
+                            <div>
+                                <span class="badge bg-primary me-1">@pokemon.PrimaryType</span>
+                                @if (!string.IsNullOrEmpty(pokemon.SecondaryType))
+                                {
+                                    <span class="badge bg-secondary">@pokemon.SecondaryType</span>
+                                }
+                            </div>
+                            <a asp-page="/Pokemon/Detail" asp-route-id="@pokemon.Id" class="btn btn-outline-primary mt-3">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        @if (Model.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link"
+                                   asp-route-page="@(Model.CurrentPage - 1)">Previous</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        }
+
+                        @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.CurrentPage < Model.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link"
+                                   asp-route-page="@(Model.CurrentPage + 1)">Next</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No results yet. Adjust filters and click "Search."
+        </div>
+    }
+</div>

@@ -1,0 +1,80 @@
+﻿@page
+@model PokeDex.Pages.Battle.StatComparisonModel
+@{
+    ViewData["Title"] = "Compare Base Stats";
+}
+
+<div class="container">
+    <h1>Compare Base Stats</h1>
+    <form method="get" class="row mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Select Pokémon #1</label>
+            <select asp-for="PokemonId1" asp-items="Model.PokemonOptions" class="form-select">
+                <option value="0">-- Choose a Pokémon --</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Select Pokémon #2</label>
+            <select asp-for="PokemonId2" asp-items="Model.PokemonOptions" class="form-select">
+                <option value="0">-- Choose a Pokémon --</option>
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Compare</button>
+        </div>
+    </form>
+
+    @if (Model.Pokemon1 != null && Model.Pokemon2 != null)
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Stat</th>
+                    <th>@Model.Pokemon1.Name</th>
+                    <th>@Model.Pokemon2.Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>HP</td>
+                    <td>@Model.Pokemon1.Stats.HP</td>
+                    <td>@Model.Pokemon2.Stats.HP</td>
+                </tr>
+                <tr>
+                    <td>Attack</td>
+                    <td>@Model.Pokemon1.Stats.Attack</td>
+                    <td>@Model.Pokemon2.Stats.Attack</td>
+                </tr>
+                <tr>
+                    <td>Defense</td>
+                    <td>@Model.Pokemon1.Stats.Defense</td>
+                    <td>@Model.Pokemon2.Stats.Defense</td>
+                </tr>
+                <tr>
+                    <td>Sp. Attack</td>
+                    <td>@Model.Pokemon1.Stats.SpecialAttack</td>
+                    <td>@Model.Pokemon2.Stats.SpecialAttack</td>
+                </tr>
+                <tr>
+                    <td>Sp. Defense</td>
+                    <td>@Model.Pokemon1.Stats.SpecialDefense</td>
+                    <td>@Model.Pokemon2.Stats.SpecialDefense</td>
+                </tr>
+                <tr>
+                    <td>Speed</td>
+                    <td>@Model.Pokemon1.Stats.Speed</td>
+                    <td>@Model.Pokemon2.Stats.Speed</td>
+                </tr>
+                <tr>
+                    <td>Total</td>
+                    <td>@Model.Pokemon1.Stats.Total</td>
+                    <td>@Model.Pokemon2.Stats.Total</td>
+                </tr>
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">Select two Pokémon to compare.</p>
+    }
+</div>

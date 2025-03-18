@@ -9,14 +9,14 @@
     <p class="lead">Your comprehensive resource for Pokémon information, battle support, and evolution research.</p>
 </div>
 
-<div class="row mt-5">
+<div class="row mt-5 justify-content-center">
     <div class="col-md-4">
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="card-title">Pokémon Search</h5>
             </div>
             <div class="card-body">
-                <p class="card-text">Search for Pokémon by name, number, or type. Filter by generation, type, or ability.</p>
+                <p class="card-text">Search for Pokémon by name, number, or type. Filter by generation, type, or ability. Click 'View Details' for more information.</p>
                 <a asp-page="/Search/Basic" class="btn btn-primary">Basic Search</a>
                 <a asp-page="/Search/Advanced" class="btn btn-outline-primary">Advanced Search</a>
             </div>
@@ -31,18 +31,7 @@
                 <p class="card-text">Find Pokémon with specific moves, calculate type effectiveness, and compare base stats.</p>
                 <a asp-page="/Battle/MoveSearch" class="btn btn-primary">Move Search</a>
                 <a asp-page="/Battle/TypeEffectiveness" class="btn btn-outline-primary">Type Chart</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title">Evolution Research</h5>
-            </div>
-            <div class="card-body">
-                <p class="card-text">View evolution chains, find Pokémon with specific evolution conditions, and more.</p>
-                <a asp-page="/Evolution/Chain" class="btn btn-primary">Evolution Chains</a>
-                <a asp-page="/Evolution/Items" class="btn btn-outline-primary">Evolution Items</a>
+                <a asp-page="/Battle/StatComparison" class="btn btn-outline-primary">Stat Comparison</a>
             </div>
         </div>
     </div>

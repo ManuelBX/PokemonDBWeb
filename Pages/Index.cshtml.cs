@@ -11,7 +11,7 @@ namespace PokeDex.Pages
     {
         private readonly IPokemonService _pokemonService;
 
-        public List<Pokemon> FeaturedPokemon { get; set; } = new List<Pokemon>();
+        public List<Models.Pokemon> FeaturedPokemon { get; set; } = new List<Models.Pokemon>();
 
         public IndexModel(IPokemonService pokemonService)
         {

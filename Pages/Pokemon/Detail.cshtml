@@ -1,0 +1,117 @@
+﻿@page "{id:int}"
+@model PokeDex.Pages.Pokemon.DetailModel
+@{
+    ViewData["Title"] = "Pokemon Details";
+}
+@if (Model.Pokemon == null)
+{
+    <div class="alert alert-danger">
+        Pokémon not found.
+    </div>
+}
+else
+{
+    <div class="container">
+        <h1>@Model.Pokemon.Name (#@Model.Pokemon.PokedexNumber)</h1>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@Model.Pokemon.ImageUrl" alt="@Model.Pokemon.Name" class="img-fluid mb-3" />
+            </div>
+            <div class="col-md-8">
+                <h4>Type(s):</h4>
+                <p>
+                    <span class="badge bg-primary">@Model.Pokemon.PrimaryType</span>
+                    @if (!string.IsNullOrEmpty(Model.Pokemon.SecondaryType))
+                    {
+                        <span class="badge bg-secondary">@Model.Pokemon.SecondaryType</span>
+                    }
+                </p>
+
+                <h4>Base Stats:</h4>
+                <ul>
+                    <li>HP: @Model.Pokemon.Stats.HP</li>
+                    <li>Attack: @Model.Pokemon.Stats.Attack</li>
+                    <li>Defense: @Model.Pokemon.Stats.Defense</li>
+                    <li>Sp. Attack: @Model.Pokemon.Stats.SpecialAttack</li>
+                    <li>Sp. Defense: @Model.Pokemon.Stats.SpecialDefense</li>
+                    <li>Speed: @Model.Pokemon.Stats.Speed</li>
+                    <li>Total: @Model.Pokemon.Stats.Total</li>
+                </ul>
+
+                <h4>Abilities:</h4>
+                @if (Model.Pokemon.Abilities != null && Model.Pokemon.Abilities.Any())
+                {
+                    <ul>
+                        @foreach (var ab in Model.Pokemon.Abilities)
+                        {
+                            <li>
+                                <strong>@ab.Name</strong>@(ab.IsHidden ? " (Hidden)" : "") - @ab.Description
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>None</p>
+                }
+
+                <h4>Moves:</h4>
+                @if (Model.Pokemon.Moves != null && Model.Pokemon.Moves.Any())
+                {
+                    <ul>
+                        @foreach (var mv in Model.Pokemon.Moves)
+                        {
+                            <li>
+                                <strong>@mv.Name</strong> (@mv.Type, @mv.Category) - Power: @mv.Power, Accuracy: @mv.Accuracy
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>None</p>
+                }
+            </div>
+        </div>
+
+        @if (Model.Evolutions != null && Model.Evolutions.Any())
+        {
+            <hr />
+            <h2>Evolution Chain</h2>
+            <div class="row">
+                @foreach (var stage in Model.Evolutions)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <img src="@stage.ImageUrl" class="card-img-top" alt="@stage.Name">
+                            <div class="card-body">
+                                <h5 class="card-title">@stage.Name</h5>
+                                <p>Type(s): @stage.PrimaryType @if (!string.IsNullOrEmpty(stage.SecondaryType)) { @stage.SecondaryType }</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (Model.PreEvolutions != null && Model.PreEvolutions.Any())
+        {
+            <hr />
+            <h2>Pre-Evolution Chain</h2>
+            <div class="row">
+                @foreach (var stage in Model.PreEvolutions)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <img src="@stage.ImageUrl" class="card-img-top" alt="@stage.Name">
+                            <div class="card-body">
+                                <h5 class="card-title">@stage.Name</h5>
+                                <p>Type(s): @stage.PrimaryType @if (!string.IsNullOrEmpty(stage.SecondaryType)) { @stage.SecondaryType }</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

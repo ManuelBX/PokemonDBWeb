@@ -1,0 +1,80 @@
+﻿@page
+@model PokeDex.Pages.Battle.MoveSearchModel
+@{
+    ViewData["Title"] = "Move Search";
+}
+
+<div class="container">
+    <h1>Move Search</h1>
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Move Name</label>
+            <select asp-for="MoveName" asp-items="Model.MoveOptions" class="form-select">
+                <option value="">-- Select Move --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Type</label>
+            <select asp-for="SelectedType" asp-items="Model.TypeOptions" class="form-select">
+                <option value="">-- Select Type --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Category</label>
+            <select asp-for="SelectedCategory" class="form-select">
+                <option value="">-- Select Category --</option>
+                @foreach (var cat in Model.Categories)
+                {
+                    <option value="@cat">@cat</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Moves Found</h4>
+            @if (Model.Moves.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var move in Model.Moves)
+                    {
+                        <li class="list-group-item">
+                            <strong>@move.Name</strong> (@move.Type, @move.Category)
+                            <br />
+                            Power: @move.Power, Accuracy: @move.Accuracy, PP: @move.PP
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No moves found.</p>
+            }
+        </div>
+
+        <div class="col-md-6">
+            <h4>Pokémon That Can Learn This Move</h4>
+            @if (Model.PokemonResults.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var poke in Model.PokemonResults)
+                    {
+                        <li class="list-group-item">
+                            <a asp-page="/Pokemon/Detail" asp-route-id="@poke.Id">
+                                #@poke.PokedexNumber - @poke.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No Pokémon list available (only applies when selecting a Move Name).</p>
+            }
+        </div>
+    </div>
+</div>

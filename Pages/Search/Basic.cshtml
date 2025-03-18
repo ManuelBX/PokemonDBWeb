@@ -1,5 +1,5 @@
 ﻿@page
-@model PokeDex.Pages.Search.BasicModel
+@model BasicModel
 @{
     ViewData["Title"] = "Basic Pokemon Search";
 }
@@ -79,7 +79,6 @@
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between">
                             <span class="fw-bold">#@pokemon.PokedexNumber</span>
-                            <span>Gen @pokemon.Generation</span>
                         </div>
                         <img src="@pokemon.ImageUrl" class="card-img-top p-3" alt="@pokemon.Name" style="height: 200px; object-fit: contain;">
                         <div class="card-body">

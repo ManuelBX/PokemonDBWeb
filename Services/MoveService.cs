@@ -27,7 +27,7 @@ namespace PokeDex.Services
             using var connection = _connectionFactory.CreateConnection();
 
             var query = @"
-                SELECT Id, Name, Type, Category, Power, Accuracy, PP, Description 
+                SELECT Name, Type, Category, Power, Accuracy, PP 
                 FROM Moves 
                 ORDER BY Name";
 
@@ -41,7 +41,7 @@ namespace PokeDex.Services
             using var connection = _connectionFactory.CreateConnection();
 
             var query = @"
-                SELECT Id, Name, Type, Category, Power, Accuracy, PP, Description 
+                SELECT Name, Type, Category, Power, Accuracy, PP 
                 FROM Moves 
                 WHERE Type = @Type 
                 ORDER BY Name";
@@ -56,7 +56,7 @@ namespace PokeDex.Services
             using var connection = _connectionFactory.CreateConnection();
 
             var query = @"
-                SELECT Id, Name, Type, Category, Power, Accuracy, PP, Description 
+                SELECT Name, Type, Category, Power, Accuracy, PP 
                 FROM Moves 
                 WHERE Category = @Category 
                 ORDER BY Name";
@@ -69,18 +69,41 @@ namespace PokeDex.Services
         public async Task<List<Pokemon>> GetPokemonByMoveAsync(string moveName)
         {
             using var connection = _connectionFactory.CreateConnection();
-
             var query = @"
-                SELECT p.Id, p.Name, p.PokedexNumber, p.Generation, p.PrimaryType, p.SecondaryType, p.ImageUrl
-                FROM Pokemon p
-                JOIN PokemonMoves pm ON p.Id = pm.PokemonId
-                JOIN Moves m ON pm.MoveId = m.Id
+                SELECT
+                    pd.Dex_Num AS DexNum,
+                    pd.Name AS DexName,
+                    pd.Regional_Form AS RegionalForm,
+                    pk.Type1,
+                    pk.Type2,
+                    pk.Height,
+                    pk.Weight
+                FROM PokeDex pd
+                JOIN Pokemon pk ON pd.Id = pk.Pokemon_Id
+                JOIN LearnSet ls ON pk.Pokemon_Id = ls.Pokemon_Id
+                JOIN Moves m ON ls.Move = m.Name
                 WHERE m.Name = @MoveName
-                ORDER BY p.PokedexNumber";
+                ORDER BY pd.Dex_Num;
+            ";
 
-            var pokemon = await connection.QueryAsync<Pokemon>(query, new { MoveName = moveName });
+            var data = await connection.QueryAsync(query, new { MoveName = moveName });
+            var result = new List<Pokemon>();
 
-            return pokemon.AsList();
+            foreach (var row in data)
+            {
+                result.Add(new Pokemon
+                {
+                    Id = row.DexNum,
+                    Name = row.DexName,
+                    PokedexNumber = row.DexNum,
+                    RegionalForm = row.RegionalForm,
+                    PrimaryType = row.Type1,
+                    SecondaryType = row.Type2,
+                    Height = row.Height,
+                    Weight = row.Weight
+                });
+            }
+            return result;
         }
     }
 }

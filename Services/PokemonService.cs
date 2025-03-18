@@ -13,7 +13,7 @@ namespace PokeDex.Services
         Task<Pokemon> GetPokemonByIdAsync(int id);
         Task<Pokemon> GetPokemonByNameAsync(string name);
         Task<List<PokemonType>> GetAllTypesAsync();
-        Task<List<Generation>> GetAllGenerationsAsync();
+        // Task<List<Generation>> GetAllGenerationsAsync();
         Task<List<PokemonAbility>> GetAllAbilitiesAsync();
         Task<int> GetTotalPokemonCountAsync(SearchFilters filters);
     }
@@ -159,7 +159,7 @@ namespace PokeDex.Services
                 SELECT 
                     pd.Dex_Num     AS DexNum,
                     pd.Name        AS DexName,
-                    pd.Id          AS PokeDexGuid,   -- not used in the model, but we can keep it
+                    pd.Id          AS PokeDexGuid,
                     pk.Pokemon_Id  AS PokemonGuid,
                     pk.Type1,
                     pk.Type2,
@@ -196,11 +196,11 @@ namespace PokeDex.Services
                     Id = row.DexNum,
                     Name = row.DexName,                 // from PokeDex.Name
                     PokedexNumber = row.DexNum,         // duplicates .Id for you
-                    Generation = 0,                     // no generation in DB
+                    // Generation = 0,                  // no generation in DB
                     PrimaryType = row.Type1,
                     SecondaryType = row.Type2,
                     // Since DB doesn't have these columns:
-                    Description = "",
+                    // Description = "",
                     ImageUrl = "",
 
                     Stats = new BaseStats
@@ -217,7 +217,7 @@ namespace PokeDex.Services
                     // you might want a separate step or left join approach.
                     Abilities = new List<PokemonAbility>(),
                     Moves = new List<PokemonMove>(),
-                    Evolution = null  // or a placeholder
+                    // Evolution = null  // or a placeholder
                 };
 
                 // Populate abilities from the three columns:
@@ -242,7 +242,7 @@ namespace PokeDex.Services
                         // Our model has an int Id, so just set 0 or any placeholder
                         poke.Abilities.Add(new PokemonAbility
                         {
-                            Id = 0,
+                            // Id = 0,
                             Name = ab.Name,
                             Description = ab.Description,
                             IsHidden = false // we have no separate "hidden" in the schema
@@ -252,7 +252,7 @@ namespace PokeDex.Services
 
                 // If you want to fill Moves for each record:
                 var movesSql = @"
-                    SELECT m.Name, m.Type, m.Power, m.Accuracy, m.Category, m.PP, m.Contact
+                    SELECT m.Name, m.Type, m.Power, m.Accuracy, m.Category, m.PP
                     FROM LearnSet ls
                     JOIN Moves m ON ls.Move = m.Name
                     WHERE ls.Pokemon_Id = @PokemonGuid
@@ -265,14 +265,14 @@ namespace PokeDex.Services
                 {
                     poke.Moves.Add(new PokemonMove
                     {
-                        Id = 0,       // again, no int PK in Moves table
+                        // Id = 0,       // again, no int PK in Moves table
                         Name = mv.Name,
                         Type = mv.Type,
                         Category = mv.Category,
                         Power = mv.Power,
                         Accuracy = mv.Accuracy,
                         PP = mv.PP,
-                        Description = "" // DB has no "Description" col
+                        // Description = "" // DB has no "Description" col
                     });
                 }
 
@@ -323,10 +323,10 @@ namespace PokeDex.Services
                 Id = row.DexNum,
                 Name = row.DexName,
                 PokedexNumber = row.DexNum,
-                Generation = 0, // no generation col
+                // Generation = 0, // no generation col
                 PrimaryType = row.Type1,
                 SecondaryType = row.Type2,
-                Description = "",
+                // Description = "",
                 ImageUrl = "",
                 Stats = new BaseStats
                 {
@@ -339,7 +339,7 @@ namespace PokeDex.Services
                 },
                 Abilities = new List<PokemonAbility>(),
                 Moves = new List<PokemonMove>(),
-                Evolution = null
+                // Evolution = null
             };
 
             // Step 2: Fill abilities
@@ -360,7 +360,7 @@ namespace PokeDex.Services
                 {
                     pokemon.Abilities.Add(new PokemonAbility
                     {
-                        Id = 0,
+                        // Id = 0,
                         Name = ab.Name,
                         Description = ab.Description,
                         IsHidden = false
@@ -370,7 +370,7 @@ namespace PokeDex.Services
 
             // Step 3: Fill moves
             var movesSql = @"
-                SELECT m.Name, m.Type, m.Power, m.Accuracy, m.Category, m.PP, m.Contact
+                SELECT m.Name, m.Type, m.Power, m.Accuracy, m.Category, m.PP
                 FROM LearnSet ls
                 JOIN Moves m ON ls.Move = m.Name
                 WHERE ls.Pokemon_Id = @PokeGuid
@@ -381,7 +381,7 @@ namespace PokeDex.Services
             {
                 pokemon.Moves.Add(new PokemonMove
                 {
-                    Id = 0,
+                    // Id = 0,
                     Name = mv.Name,
                     Type = mv.Type,
                     Category = mv.Category,
@@ -393,7 +393,7 @@ namespace PokeDex.Services
             }
 
             // Step 4: Evolution data is not trivially mapped; return null or do custom logic
-            pokemon.Evolution = null;
+            // pokemon.Evolution = null;
 
             return pokemon;
         }
@@ -444,19 +444,19 @@ namespace PokeDex.Services
         /// But your interface demands it. If you want to keep code consistent,
         /// just return an empty list or implement your own logic if you add such a table.
         /// </summary>
-        public async Task<List<Generation>> GetAllGenerationsAsync()
-        {
-            // Return an empty list by default
-            return new List<Generation>();
+        //public async Task<List<Generation>> GetAllGenerationsAsync()
+        //{
+        //    // Return an empty list by default
+        //    return new List<Generation>();
 
-            // If you later add a table, you'd do something like:
-            /*
-            using var connection = _connectionFactory.CreateConnection();
-            var sql = "SELECT ... FROM Generations ...";
-            var rows = await connection.QueryAsync<Generation>(sql);
-            return rows.ToList();
-            */
-        }
+        //    // If you later add a table, you'd do something like:
+        //    /*
+        //    using var connection = _connectionFactory.CreateConnection();
+        //    var sql = "SELECT ... FROM Generations ...";
+        //    var rows = await connection.QueryAsync<Generation>(sql);
+        //    return rows.ToList();
+        //    */
+        //}
 
         /// <summary>
         /// Return all Abilities from the `Abilities` table, 
@@ -477,7 +477,7 @@ namespace PokeDex.Services
             {
                 result.Add(new PokemonAbility
                 {
-                    Id = 0,               // No int PK in the DB
+                    // Id = 0,               // No int PK in the DB
                     Name = r.Name,
                     Description = r.Description,
                     IsHidden = false

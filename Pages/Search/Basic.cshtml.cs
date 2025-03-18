@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using PokeDex.Models;
 using PokeDex.Services;
 
-namespace PokeDex.Pages.Search
+namespace PokemonDBWeb2.Pages.Search
 {
     public class BasicModel : PageModel
     {
@@ -37,7 +37,7 @@ namespace PokeDex.Pages.Search
         [BindProperty(SupportsGet = true)]
         public int Page { get; set; } = 1;
 
-        public IEnumerable<Pokemon> Results { get; set; }
+        public IEnumerable<PokeDex.Models.Pokemon> Results { get; set; }
         public int TotalResults { get; set; }
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
@@ -85,8 +85,8 @@ namespace PokeDex.Pages.Search
             TypeOptions = new SelectList(types, "Name", "Name");
 
             // Load generation options
-            var generations = await _pokemonService.GetAllGenerationsAsync();
-            GenerationOptions = new SelectList(generations, "Id", "Name");
+            // var generations = await _pokemonService.GetAllGenerationsAsync();
+            // GenerationOptions = new SelectList(generations, "Id", "Name");
         }
     }
 }

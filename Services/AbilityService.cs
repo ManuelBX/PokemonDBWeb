@@ -26,7 +26,7 @@ namespace PokeDex.Services
             using var connection = _connectionFactory.CreateConnection();
 
             var query = @"
-                SELECT Id, Name, Description 
+                SELECT Name, Description 
                 FROM Abilities 
                 ORDER BY Name";
 
@@ -40,7 +40,7 @@ namespace PokeDex.Services
             using var connection = _connectionFactory.CreateConnection();
 
             var query = @"
-                SELECT Id, Name, Description 
+                SELECT Name, Description 
                 FROM Abilities 
                 WHERE Name = @Name";
 
@@ -52,43 +52,39 @@ namespace PokeDex.Services
         public async Task<List<Pokemon>> GetPokemonByAbilityAsync(string abilityName)
         {
             using var connection = _connectionFactory.CreateConnection();
-
             var query = @"
-                SELECT p.Id, p.Name, p.PokedexNumber, p.Generation, p.PrimaryType, p.SecondaryType, p.ImageUrl, pa.IsHidden
-                FROM Pokemon p
-                JOIN PokemonAbilities pa ON p.Id = pa.PokemonId
-                JOIN Abilities a ON pa.AbilityId = a.Id
-                WHERE a.Name = @AbilityName
-                ORDER BY p.PokedexNumber";
+                SELECT
+                    pd.Dex_Num,
+                    pd.Name AS DexName,
+                    pd.Regional_Form AS RegionalForm,
+                    pk.Type1,
+                    pk.Type2,
+                    pk.Height,
+                    pk.Weight
+                FROM PokeDex pd
+                JOIN Pokemon pk ON pd.Id = pk.Pokemon_Id
+                WHERE pk.Ability1 = @AbilityName
+                   OR pk.Ability2 = @AbilityName
+                   OR pk.Ability3 = @AbilityName
+                ORDER BY pd.Dex_Num;
+            ";
 
-            var pokemon = await connection.QueryAsync<dynamic>(query, new { AbilityName = abilityName });
-
+            var data = await connection.QueryAsync(query, new { AbilityName = abilityName });
             var result = new List<Pokemon>();
-
-            foreach (var row in pokemon)
+            foreach (var row in data)
             {
-                var poke = new Pokemon
+                result.Add(new Pokemon
                 {
-                    Id = row.Id,
-                    Name = row.Name,
-                    PokedexNumber = row.PokedexNumber,
-                    Generation = row.Generation,
-                    PrimaryType = row.PrimaryType,
-                    SecondaryType = row.SecondaryType,
-                    ImageUrl = row.ImageUrl,
-                    Abilities = new List<PokemonAbility>
-                    {
-                        new PokemonAbility
-                        {
-                            Name = abilityName,
-                            IsHidden = row.IsHidden
-                        }
-                    }
-                };
-
-                result.Add(poke);
+                    Id = row.Dex_Num,
+                    Name = row.DexName,
+                    PokedexNumber = row.Dex_Num,
+                    RegionalForm = row.RegionalForm,
+                    PrimaryType = row.Type1,
+                    SecondaryType = row.Type2,
+                    Height = row.Height,
+                    Weight = row.Weight
+                });
             }
-
             return result;
         }
     }

@@ -79,7 +79,7 @@ CREATE TABLE Moves (
     Accuracy INT CHECK (Accuracy > 0),
     Category VARCHAR(10) NOT NULL,
     PP INT NOT NULL CHECK (PP > 0),
-    Contact BIT NOT NULL, -- BIT is SQL Server's boolean type
+    -- Contact BIT NOT NULL, -- BIT is SQL Server's boolean type REMOVED
     Type VARCHAR(10) NOT NULL,
     FOREIGN KEY (Type) REFERENCES Types(Name),
     CONSTRAINT check_move_name_length CHECK (LEN(Name) BETWEEN 1 AND 256),

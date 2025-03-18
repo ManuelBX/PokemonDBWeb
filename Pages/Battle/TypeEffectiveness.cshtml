@@ -1,0 +1,68 @@
+﻿@page
+@model PokeDex.Pages.Battle.TypeEffectivenessModel
+@{
+    ViewData["Title"] = "Type Effectiveness";
+}
+
+<div class="container">
+    <h1>Type Effectiveness</h1>
+
+    <form method="get" class="row mb-4">
+        <div class="col-md-6">
+            <label class="form-label">Select a Pokémon</label>
+            <select asp-for="PokemonId" asp-items="Model.PokemonOptions" class="form-select">
+                <option value="0">-- Choose a Pokémon --</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Check Effectiveness</button>
+        </div>
+    </form>
+
+    @if (Model.PokemonId > 0 && Model.SelectedPokemon != null)
+    {
+        <h3>
+            Effectiveness Against @Model.SelectedPokemon.Name
+            (@Model.SelectedPokemon.PrimaryType
+            @if (!string.IsNullOrEmpty(Model.SelectedPokemon.SecondaryType))
+            {
+                <text>/ @Model.SelectedPokemon.SecondaryType</text>
+            }
+            )
+        </h3>
+
+        @if (Model.EffectivenessMap.Any())
+        {
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Attacking Type</th>
+                        <th>Multiplier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var kvp in Model.EffectivenessMap.OrderBy(k => k.Key))
+                    {
+                        <tr>
+                            <td>@kvp.Key</td>
+                            <td>@kvp.Value</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <p class="text-muted">
+                0 means no effect, 0.5 means not very effective,
+                2 means super-effective, etc.
+            </p>
+        }
+        else
+        {
+            <p class="alert alert-info">No matrix data found.</p>
+        }
+    }
+    else
+    {
+        <p class="text-muted">Select a Pokémon to see type effectiveness.</p>
+    }
+</div>

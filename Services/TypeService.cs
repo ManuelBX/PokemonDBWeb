@@ -8,9 +8,8 @@ namespace PokeDex.Services
 {
     public interface ITypeService
     {
-        Task<List<TypeEffectiveness>> GetTypeEffectivenessChartAsync();
-        Task<List<TypeEffectiveness>> GetTypeEffectivenessForPokemonAsync(int pokemonId);
-        Task<Dictionary<string, double>> CalculateTypeEffectivenessAgainstPokemonAsync(int pokemonId);
+        // You could do something like:
+        Task<Dictionary<string, Dictionary<string, double>>> GetTypeMatrixAsync();
     }
 
     public class TypeService : ITypeService
@@ -22,92 +21,67 @@ namespace PokeDex.Services
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<List<TypeEffectiveness>> GetTypeEffectivenessChartAsync()
+        /// <summary>
+        /// Example: returns a nested dictionary. 
+        /// Outer key = type name (the row in Types),
+        /// Inner keys = "Normal", "Fire", "Water", etc., with the float multiplier.
+        /// Then you can interpret that as "AttackingType vs_Defending" in code.
+        /// </summary>
+        public async Task<Dictionary<string, Dictionary<string, double>>> GetTypeMatrixAsync()
         {
             using var connection = _connectionFactory.CreateConnection();
+            var sql = @"
+                SELECT 
+                    Name,
+                    vs_Normal,
+                    vs_Fire,
+                    vs_Water,
+                    vs_Electric,
+                    vs_Grass,
+                    vs_Ice,
+                    vs_Fighting,
+                    vs_Poison,
+                    vs_Ground,
+                    vs_Flying,
+                    vs_Psychic,
+                    vs_Bug,
+                    vs_Rock,
+                    vs_Ghost,
+                    vs_Dragon,
+                    vs_Dark,
+                    vs_Steel,
+                    vs_Fairy
+                FROM Types
+                ORDER BY Name;
+            ";
+            var rows = await connection.QueryAsync(sql);
+            var result = new Dictionary<string, Dictionary<string, double>>();
 
-            var query = @"
-                SELECT AttackingType, DefendingType, Multiplier
-                FROM TypeEffectiveness";
-
-            var effectiveness = await connection.QueryAsync<TypeEffectiveness>(query);
-
-            return effectiveness.AsList();
-        }
-
-        public async Task<List<TypeEffectiveness>> GetTypeEffectivenessForPokemonAsync(int pokemonId)
-        {
-            using var connection = _connectionFactory.CreateConnection();
-
-            var query = @"
-                SELECT te.AttackingType, te.DefendingType, te.Multiplier
-                FROM TypeEffectiveness te
-                JOIN Pokemon p ON te.DefendingType = p.PrimaryType OR te.DefendingType = p.SecondaryType
-                WHERE p.Id = @PokemonId AND p.SecondaryType IS NOT NULL
-                UNION
-                SELECT te.AttackingType, te.DefendingType, te.Multiplier
-                FROM TypeEffectiveness te
-                JOIN Pokemon p ON te.DefendingType = p.PrimaryType
-                WHERE p.Id = @PokemonId AND p.SecondaryType IS NULL";
-
-            var effectiveness = await connection.QueryAsync<TypeEffectiveness>(query, new { PokemonId = pokemonId });
-
-            return effectiveness.AsList();
-        }
-
-        public async Task<Dictionary<string, double>> CalculateTypeEffectivenessAgainstPokemonAsync(int pokemonId)
-        {
-            using var connection = _connectionFactory.CreateConnection();
-
-            // Get Pokemon's types
-            var pokemonQuery = @"
-                SELECT PrimaryType, SecondaryType
-                FROM Pokemon
-                WHERE Id = @PokemonId";
-
-            var pokemon = await connection.QueryFirstOrDefaultAsync<dynamic>(pokemonQuery, new { PokemonId = pokemonId });
-
-            if (pokemon == null)
-                return new Dictionary<string, double>();
-
-            // Get type effectiveness for primary type
-            var primaryEffectivenessQuery = @"
-                SELECT AttackingType, Multiplier
-                FROM TypeEffectiveness
-                WHERE DefendingType = @DefendingType";
-
-            var primaryEffectiveness = await connection.QueryAsync<dynamic>(
-                primaryEffectivenessQuery,
-                new { DefendingType = pokemon.PrimaryType });
-
-            var result = primaryEffectiveness
-                .ToDictionary(
-                    x => (string)x.AttackingType,
-                    x => (double)x.Multiplier
-                );
-
-            // If pokemon has secondary type, multiply effectiveness
-            if (pokemon.SecondaryType != null)
+            foreach (var r in rows)
             {
-                var secondaryEffectivenessQuery = @"
-                    SELECT AttackingType, Multiplier
-                    FROM TypeEffectiveness
-                    WHERE DefendingType = @DefendingType";
-
-                var secondaryEffectiveness = await connection.QueryAsync<dynamic>(
-                    secondaryEffectivenessQuery,
-                    new { DefendingType = pokemon.SecondaryType });
-
-                foreach (var effectiveness in secondaryEffectiveness)
+                var rowDict = new Dictionary<string, double>
                 {
-                    string attackingType = effectiveness.AttackingType;
-                    double multiplier = effectiveness.Multiplier;
+                    ["Normal"]   = r.vs_Normal,
+                    ["Fire"]     = r.vs_Fire,
+                    ["Water"]    = r.vs_Water,
+                    ["Electric"] = r.vs_Electric,
+                    ["Grass"]    = r.vs_Grass,
+                    ["Ice"]      = r.vs_Ice,
+                    ["Fighting"] = r.vs_Fighting,
+                    ["Poison"]   = r.vs_Poison,
+                    ["Ground"]   = r.vs_Ground,
+                    ["Flying"]   = r.vs_Flying,
+                    ["Psychic"]  = r.vs_Psychic,
+                    ["Bug"]      = r.vs_Bug,
+                    ["Rock"]     = r.vs_Rock,
+                    ["Ghost"]    = r.vs_Ghost,
+                    ["Dragon"]   = r.vs_Dragon,
+                    ["Dark"]     = r.vs_Dark,
+                    ["Steel"]    = r.vs_Steel,
+                    ["Fairy"]    = r.vs_Fairy
+                };
 
-                    if (result.ContainsKey(attackingType))
-                    {
-                        result[attackingType] *= multiplier;
-                    }
-                }
+                result[r.Name] = rowDict;
             }
 
             return result;
