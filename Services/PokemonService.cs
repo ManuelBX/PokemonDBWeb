@@ -370,7 +370,7 @@ namespace PokeDex.Services
 
             // Step 3: Fill moves
             var movesSql = @"
-                SELECT m.Name, m.Type, m.Power, m.Accuracy, m.Category, m.PP
+                SELECT m.Name, m.Type, m.Power, m.Accuracy, m.Category, m.PP, ls.Level_Learned
                 FROM LearnSet ls
                 JOIN Moves m ON ls.Move = m.Name
                 WHERE ls.Pokemon_Id = @PokeGuid
@@ -388,7 +388,8 @@ namespace PokeDex.Services
                     Power = mv.Power,
                     Accuracy = mv.Accuracy,
                     PP = mv.PP,
-                    Description = "" // not in DB
+                    Description = "", // not in DB
+                    Level_Learned = mv.Level_Learned
                 });
             }
 

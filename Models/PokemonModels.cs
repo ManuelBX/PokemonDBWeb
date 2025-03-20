@@ -51,6 +51,7 @@
             public int Accuracy { get; set; }
             public int PP { get; set; }
             public string Description { get; set; }
+            public int Level_Learned { get; set; }
         }
 
         public class PokemonType
