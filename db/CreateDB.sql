@@ -57,7 +57,7 @@ CREATE TABLE Pokemon (
     Ability1 VARCHAR(256) NOT NULL,
     Ability2 VARCHAR(256), -- Can be NULL
     Ability3 VARCHAR(256), -- Can be NULL
-    Height VARCHAR(256) NOT NULL,
+    Height INT NOT NULL CHECK (Height > 0),
     Weight INT NOT NULL CHECK (Weight > 0),
     
     FOREIGN KEY (Pokemon_Id) REFERENCES PokeDex(Id),
@@ -66,8 +66,6 @@ CREATE TABLE Pokemon (
     FOREIGN KEY (Ability1) REFERENCES Abilities(Name),
     FOREIGN KEY (Ability2) REFERENCES Abilities(Name),
     FOREIGN KEY (Ability3) REFERENCES Abilities(Name),
-    CONSTRAINT check_height_format CHECK (Height LIKE '[0-9]%''[0-9][0-9]"' AND 
-                                          SUBSTRING(Height, PATINDEX('%''%', Height) + 1, 2) BETWEEN '00' AND '11')
 );
 GO
 
@@ -76,10 +74,13 @@ GO
 CREATE TABLE Moves (
     Name VARCHAR(256) PRIMARY KEY,
     Power INT CHECK (Power >= 0),
-    Accuracy INT CHECK (Accuracy > 0),
+    Accuracy INT CHECK (Accuracy >= 0),
     Category VARCHAR(10) NOT NULL,
     PP INT NOT NULL CHECK (PP > 0),
+<<<<<<< Updated upstream
     -- Contact BIT NOT NULL, -- BIT is SQL Server's boolean type REMOVED
+=======
+>>>>>>> Stashed changes
     Type VARCHAR(10) NOT NULL,
     FOREIGN KEY (Type) REFERENCES Types(Name),
     CONSTRAINT check_move_name_length CHECK (LEN(Name) BETWEEN 1 AND 256),
