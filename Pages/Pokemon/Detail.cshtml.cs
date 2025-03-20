@@ -20,7 +20,7 @@ namespace PokeDex.Pages.Pokemon
         public Models.Pokemon Pokemon { get; set; }
         public List<Models.Pokemon> Evolutions { get; set; }
         public List<Models.Pokemon> PreEvolutions { get; set; }
-
+        
         public async Task<IActionResult> OnGetAsync(int id)
         {
             // Retrieve the single Pokemon
@@ -54,6 +54,10 @@ namespace PokeDex.Pages.Pokemon
                     PreEvolutions.Add(preEvolvedPokemon);
                 }
             }
+
+            Pokemon.ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{Pokemon.PokedexNumber}.png";
+
+            // Return the page with the Pokemon details
 
             return Page();
         }
