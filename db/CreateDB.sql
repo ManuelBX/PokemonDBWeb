@@ -49,7 +49,7 @@ CREATE TABLE PokeDex (
 );
 GO
 
--- Create Pokemon table using PokeDex.Id as reference
+-- Create Pokemon table
 CREATE TABLE Pokemon (
     Pokemon_Id UNIQUEIDENTIFIER PRIMARY KEY,
     Type1 VARCHAR(10) NOT NULL,
@@ -77,10 +77,7 @@ CREATE TABLE Moves (
     Accuracy INT CHECK (Accuracy >= 0),
     Category VARCHAR(10) NOT NULL,
     PP INT NOT NULL CHECK (PP > 0),
-<<<<<<< Updated upstream
     -- Contact BIT NOT NULL, -- BIT is SQL Server's boolean type REMOVED
-=======
->>>>>>> Stashed changes
     Type VARCHAR(10) NOT NULL,
     FOREIGN KEY (Type) REFERENCES Types(Name),
     CONSTRAINT check_move_name_length CHECK (LEN(Name) BETWEEN 1 AND 256),
@@ -88,7 +85,7 @@ CREATE TABLE Moves (
 );
 GO
 
--- Create LearnSet table with Pokemon_Id
+-- Create LearnSet table
 CREATE TABLE LearnSet (
     Pokemon_Id UNIQUEIDENTIFIER,
     Move VARCHAR(256),
@@ -99,7 +96,7 @@ CREATE TABLE LearnSet (
 );
 GO
 
--- Create Evolutions table with Pokemon_Id
+-- Create Evolutions table
 CREATE TABLE Evolutions (
     Base_Pokemon_Id UNIQUEIDENTIFIER,
     Evolved_Pokemon_Id UNIQUEIDENTIFIER,
@@ -124,7 +121,7 @@ CREATE TABLE Pokemon_Stats (
 );
 GO
 
--- Create useful indexes
+-- Create indexes
 CREATE INDEX idx_pokedex_dexnum ON PokeDex(Dex_Num);
 CREATE INDEX idx_pokedex_name ON PokeDex(Name);
 CREATE INDEX idx_pokedex_form ON PokeDex(Regional_Form);
