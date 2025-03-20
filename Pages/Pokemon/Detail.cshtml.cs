@@ -55,10 +55,6 @@ namespace PokeDex.Pages.Pokemon
                 }
             }
 
-            Pokemon.ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{Pokemon.PokedexNumber}.png";
-
-            // Return the page with the Pokemon details
-
             return Page();
         }
     }

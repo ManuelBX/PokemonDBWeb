@@ -201,7 +201,7 @@ namespace PokeDex.Services
                     SecondaryType = row.Type2,
                     // Since DB doesn't have these columns:
                     // Description = "",
-                    ImageUrl = "",
+                    ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{row.DexNum}.png",
 
                     Stats = new BaseStats
                     {
@@ -327,7 +327,7 @@ namespace PokeDex.Services
                 PrimaryType = row.Type1,
                 SecondaryType = row.Type2,
                 // Description = "",
-                ImageUrl = "",
+                ImageUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{row.DexNum}.png",
                 Stats = new BaseStats
                 {
                     HP = row.HP,
