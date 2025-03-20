@@ -74,7 +74,7 @@ namespace PokemonDBWeb2.Pages.Search
 
                 Results = await _pokemonService.SearchPokemonAsync(filters);
                 TotalResults = await _pokemonService.GetTotalPokemonCountAsync(filters);
-                TotalPages = (int)Math.Ceiling((double)TotalResults / PageSize);
+                TotalPages = (int) Math.Ceiling((double) TotalResults / PageSize);
             }
         }
 
